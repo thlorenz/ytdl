@@ -69,36 +69,15 @@ class YouTubeDownloadable {
   String get humanSize => _humanSize;
 }
 
-class YouTubeDownloadResult {
-  final String _path;
-  final Error _error;
-
-  YouTubeDownloadResult(this._path, Error error) : this._error = error;
-
-  bool get hasError => this._error != null;
-  String get path => this._path;
-  Error get error => this._error;
-}
-
 class YoutubeDownloader {
-  String _id;
-  final String _url;
+  final String _id;
   final YouTubeExtractor _extractor;
 
-  YoutubeDownloader({String id = null, String url = null})
-      : this._id = id,
-        this._url = url,
-        this._extractor = YouTubeExtractor() {
-    if (id == null && url == null) {
-      throw ArgumentError('Need to provide either id or url');
-    }
-    if (id != null && url != null) {
-      throw ArgumentError('Need to provide either id or url, but not both');
-    }
-    if (id == null) {
-      this._id = ytIdFromUrl(this._url);
-      if (this._id == null) throw ArgumentError('No id found in url ($url)');
-    }
+  YoutubeDownloader(String url)
+      : this._extractor = YouTubeExtractor(),
+        this._id = ytIdFromUrl(url) {
+    if (this._id == null)
+      throw ArgumentError('URL did not contain valid video id');
   }
 
   Future<List<YouTubeDownloadable>> options() async {
@@ -118,13 +97,11 @@ class YoutubeDownloader {
     try {
       final res = await http.get(downloadable.streamUrl);
       if (res.statusCode != 200) {
-        throw StateError(
-            'Unable to download stream, ' +
+        throw StateError('Unable to download stream, ' +
             'got status code ${res.statusCode} (${res.reasonPhrase})');
       }
       if (res.contentLength == 0) {
-        throw StateError(
-            'Unable to download stream, got no content');
+        throw StateError('Unable to download stream, got no content');
       }
       final file = io.File(filePath);
       await file.writeAsBytes(res.bodyBytes);

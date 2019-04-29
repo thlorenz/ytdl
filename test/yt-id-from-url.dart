@@ -32,4 +32,34 @@ void main() {
       expect(sut.ytIdFromUrl(validURL2), null);
     });
   });
+
+  group('valid shares', () {
+    const id = 'ai5lnhaGm8U';
+    const share = 'https://youtu.be/$id';
+    test(share, () {
+      expect(sut.ytIdFromUrl(share), id);
+    });
+  });
+
+  group('invalid shares', () {
+    const id = 'ai5lnhaGm8U';
+    const share = 'https://foo.be/$id';
+    test(share, () {
+      expect(sut.ytIdFromUrl(share), null);
+    });
+  });
+
+  group('valid ids', () {
+    const id = 'ai5lnhaGm8U';
+    test(id, () {
+      expect(sut.ytIdFromUrl(id), id);
+    });
+  });
+
+  group('invalid ids', () {
+    const id = 'ai5lnh aGm8U';
+    test(id, () {
+      expect(sut.ytIdFromUrl(id), null);
+    });
+  });
 }

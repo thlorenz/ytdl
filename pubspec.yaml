@@ -3,6 +3,9 @@ description: Downloads YouTube Videos via a given ID or URL
 
 dependencies:
   youtube_extractor: ^1.0.2
+  filesize: ^1.0.1
+  uuid: ^2.0.0
+  http: ^0.12.0
 
 dev_dependencies:
   test: ^1.6.2
